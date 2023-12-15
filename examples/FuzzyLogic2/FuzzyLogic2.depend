@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1702652846 source:d:\berlian file\cpp programs\fuzzylogic2\fuzzylogic.cpp
+	"FuzzyLogic.h"
+
+1702656968 d:\berlian file\cpp programs\fuzzylogic2\fuzzylogic.h
+
+1702656960 source:d:\berlian file\cpp programs\fuzzylogic2\main.cpp
+	<iostream>
+	"FuzzyLogic.h"
+
