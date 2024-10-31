@@ -1,6 +1,8 @@
 Author          : Berlian Oka Irvianto  (Indonesia)
 
-Last Modified   : Friday, December 15th 2023
+First Modified   : December 2023
+
+Last Modified    : October 2024
 
 
 This is a library that consist tools and objects (`FuzzySet`, `FuzzyFrame`, `FuzzyRule`
@@ -14,7 +16,7 @@ For more details about how to use this library, please have a look on
 program example that were provided by the author in this repository.
 
 # HOW TO USE THE LIBRARY
-## Setting up the fuzzy system
+## Declaring/Creating the Fuzzy System Objects
 Is this library, setting up the Fuzzy System can be done by creating this library objects: `FuzzySet`, `FuzzyFrame`,
 `FuzzyRule` and lastly `FuzzyFrame`. In general, all of the created objects (except for `FuzzyFrame`) are declared
 as an array (Read the example below to setting up the fuzzy system properly). The pointer of the objects (such as pointer
@@ -52,25 +54,45 @@ Here is the step for initializing our fuzzy system.
 
       The `FuzzyRule` object is the most important object to create for creating Fuzzy Rule Base of our Fuzzy Logic System. It is represented in the form of "IF \<antecedent\> THEN \<consequent\>" where the \<antecedent\> and \<consequent\> can be a combination of atomic proposition with a connective in the form of conjunction (logical AND) or disjunction (logical OR). For example, we can create a Fuzzy Rule where the antecedent consists of 2 atomic proposition (therefore, two 'FuzzyFrame') and the consequent consists of 1 atomic proposition (therefore, one `FuzzyFrame`) such as "IF (*Temperature* is *Cold*) AND (*Humidity* is *Wet*) THEN (*Heater* is *On*)". This library only support logical connective "AND" or conjunction to form a Fuzzy Rule in Fuzzy Logic System. Therefore, to create a complete rules that map inputs to the output, we must create a number of `FuzzyRule` that depend on the number of Input Frames (Antecedent) and its corresponding linguistic values; for example, if the antedent consists of 2 atomic proposition (therefore, 2 Fuzzy Frame) with each Fuzzy Frame (therefore linguistic variable) has 3 linguistic value, then we have to define 3 x 3 Fuzzy Rules in our system. The example below shows how to declare `FuzzyRules` and its corresponding antecedent and consequent.
       ```
-      FuzzyRule myRules[9];             // There are 27 rules. The number of rules depend on number of combination
+      FuzzyRule myRules[9];             // There are 9 rules. The number of rules depend on number of combination
                                         // of linguistic values of each linguistic variables in antecedent
 
-      unsigned int input_rule[9][2];    // Of course there are 27 antecedent. Each antecedent consist of 2 linguistic values
+      unsigned int input_rule[9][2];    // Of course there are 9 antecedent. Each antecedent consist of 2 linguistic values
                                         // of different linguistic variables to define specific "IF" part in IF-THEN rule
 
-      unsigned int output_rule[9][1];   // Of course there are 27 consequent. Each consequent consist of 1 linguistic values
+      unsigned int output_rule[9][1];   // Of course there are 9 consequent. Each consequent consist of 1 linguistic values
                                         // of 1 linguistic variables to define specific "THEN" part in IF-THEN rule
       ```
   
 4.  **Declare** `FuzzySystem` **Object**
-   // Example:
-   ```
-   FuzzySystem mySystem(myRules, 27)// Declare a system that consist of 27 rule and use FuzzyRule that has been declared as argument
 
-6. Setting up the FuzzySets, FuzzyFrames, and FuzzyRules that has been declared. This consist
-   of determining the membership function of each FuzzySet(s), Determining wich FuzzyFrames as
-   input frames (antecedent) and other one (consequent), Determining IF-THEN rule for each rule
-   etc. For more details, please have a look on example program that were provided in this repository
+      `FuzzySystem` is the final object of the library that need to be declared. To declare or create `FuzzySystem` object, we have to pass the pointer to the array of `FuzzyRule` object that has been created and the number of rules that has been created (in this example, we have 3 x 3 rules). This `FuzzySystem` then will be used to compute the output of our fuzzy logic system based on the inputs and depends on our fuzzy rules and fuzzy knowledge base. The example below shows how to declare the `FuzzySystem` object.
+      ```
+      FuzzySystem mySystem(myRules, 9)// Declare a system that consist of 27 rule and use FuzzyRule that has been declared as argument
+      ```
+
+## Setting up the Fuzzy System Objects
+
+After we create the `FuzzySets`, `FuzzyFrames`, and `FuzzyRules`, then we have to set up these object. This process consist
+of determining the membership function of each `FuzzySet`s, Determining which `FuzzyFrame`s as
+input frames (antecedent) and other one (consequent), determining IF-THEN rule for each `FuzzyRule`s
+etc. For more details, please have a look on example program that were provided in this repository.
 
 ## Using It for Generating Output in Main Application Section
-After we finished the initiation of fuzzy system, then we can use some method of `FuzzySystem` class to perform fuzzy operation. 
+
+After we finished the initiation of fuzzy system, then we can use some method of `FuzzySystem` class to perform fuzzy operation. In general, the operation
+intend to map the inputs (such as sensor datas like temperature, humidity, etc) into outputs (such as actuator output) based on the fuzzy rules and fuzzy knowledge
+base in our system (Inference Mechanism). To perform the computation of the output, just pass pointer to the float array input as an argument to `FuzzySystem.Defuzzyfication(float* input, unsigned int output_id)`.
+
+```
+/* Create an input and output as float variables */
+float inputs[2] = {
+    27.5,        // This is dummy value for temperature input data in this example
+    40.0         // This is dummy value for humidity input data in this example
+};
+float output;    // The variable that hold output data, in this case heater output, of our fuzzy logic system
+
+/* Computing the output */
+output = mySystem.Defuzzyfication(inputs, 0);    // First parameter is inputs pointer and second parameter is output index (if there are 2 or more output)
+                                                 // For a single output, the index always be 0.
+```
