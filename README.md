@@ -64,4 +64,4 @@ Here is the step for initializing our fuzzy system.
    etc. For more details, please have a look on example program that were provided in this repository
 
 ## Using It for Generating Output in Main Application Section
-After we finished the initiation of fuzzy system, then we can use some method of `FuzzySystem` class to perform fuzzy operation.
+After we finished the initiation of fuzzy system, then we can use some method of `FuzzySystem` class to perform fuzzy operation. 
