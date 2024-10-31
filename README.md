@@ -2,8 +2,6 @@ Author          : Berlian Oka Irvianto  (Indonesia)
 
 Last Modified   : Friday, December 15th 2023
 
-"In the name of God, the Most Gracious, the Most Merciful"
-
 
 This is a library that consist a tool (`FuzzySet`, `FuzzyFrame`, `FuzzyRule`
 and `FuzzySystem`) to implement Fuzzy Logic. This library was originally
