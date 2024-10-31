@@ -53,3 +53,4 @@ program example that were provided by the author in this repository.
    etc. For more details, please have a look on example program that were provided in this repository
 
 ## Using It for Generating Output in Main Application Section
+After we finished the initiation of fuzzy system, then we can use some method of `FuzzySystem` class to perform fuzzy operation.
