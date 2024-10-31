@@ -24,9 +24,9 @@ to the `FuzzySet`, `FuzzyFrame`, and `FuzzyRule` object) then will be needed to 
 the pointer to the `FuzzySet` object (as an array) must be passed as one of arguments to set up the FuzzyFrame object.
 The Figure below explains the relationship between this library objects where in that figure, the system use 2 Input `FuzzyFrame` and 1 
 Output `FuzzyFrame` with each of input `FuzzyFrame` consists of 3 `FuzzySet` and output `FuzzyFrame` consists of 2 `FuzzySet`. 
-
+<!---
 ![Figure 1](https://github.com/BerlianOkaI/Fuzzy-Logic/blob/BerlianOkaI/Fuzzy-Logic/FuzzySystemDataStructure.drawio.png)
-
+--->
 Here is the step for initializing our fuzzy system.
   
 1.  **Declare** `FuzzySet` **Object as an array for both Input and Output**
