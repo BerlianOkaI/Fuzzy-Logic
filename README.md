@@ -18,12 +18,14 @@ program example that were provided by the author in this repository.
 Is this library, setting up the Fuzzy System can be done by creating this library objects: `FuzzySet`, `FuzzyFrame`,
 `FuzzyRule` and lastly `FuzzyFrame`. In general, all of the created objects (except for `FuzzyFrame`) are declared
 as an array (Read the example below to setting up the fuzzy system properly). The pointer of the objects (such as pointer
-to the `FuzzySet', `FuzzyFrame`, and `FuzzyRule` object) then will be needed to set up the higher objects; For example,
+to the `FuzzySet`, `FuzzyFrame`, and `FuzzyRule` object) then will be needed to set up the higher objects; For example,
 the pointer to the `FuzzySet` object (as an array) must be passed as one of arguments to set up the FuzzyFrame object.
-Figure 1 below explains the relationship between this library objects.
+The Figure below explains the relationship between this library objects where in that figure, the system use 2 Input `FuzzyFrame` and 1 
+Output `FuzzyFrame` with each of input `FuzzyFrame` consists of 3 `FuzzySet` and output `FuzzyFrame` consists of 2 `FuzzySet`. 
 
+![Figure 1](https://github.com/BerlianOkaI/Fuzzy-Logic/blob/BerlianOkaI/Fuzzy-Logic/FuzzySystemDataStructure.drawio.png)
 
-
+Here is the step for initializing our fuzzy system.
   
 1. Declaration of Linguistic Values of each Linguistic Variables as array of class <FuzzySet>
    // Example:
