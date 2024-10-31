@@ -3,7 +3,7 @@ Author          : Berlian Oka Irvianto  (Indonesia)
 Last Modified   : Friday, December 15th 2023
 
 
-This is a library that consist a tool (`FuzzySet`, `FuzzyFrame`, `FuzzyRule`
+This is a library that consist tools and objects (`FuzzySet`, `FuzzyFrame`, `FuzzyRule`
 and `FuzzySystem`) to implement Fuzzy Logic. This library was originally
 created by the author for applying Fuzzy Logic as a control system in
 embedded system (using avr microcontroller like ATmega328p etc). This
@@ -13,7 +13,8 @@ as an array (for example, `FuzzySet mySet[3]`, `FuzzyRule myRule[27]`, etc).
 For more details about how to use this library, please have a look on
 program example that were provided by the author in this repository.
 
-## HOW TO USE IN GENERAL
+# HOW TO USE THE LIBRARY
+## Setting up the fuzzy system
   
 1. Declaration of Linguistic Values of each Linguistic Variables as array of class <FuzzySet>
    // Example:
@@ -51,4 +52,4 @@ program example that were provided by the author in this repository.
    input frames (antecedent) and other one (consequent), Determining IF-THEN rule for each rule
    etc. For more details, please have a look on example program that were provided in this repository
 
-6. Use the FuzzySystem to produce output (crisp) given by inputs
+## Using It for Generating Output in Main Application Section
