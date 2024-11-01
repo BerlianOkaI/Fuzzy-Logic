@@ -1,6 +1,6 @@
 /***
   * Author          : Berlian Oka Irvianto  (Indonesia)
-  * Last Modified   : Friday, December 15th 2023
+  * Last Modified   : November, 2024
   *
   * "In the name of God, the Most Gracious, the Most Merciful"
   *
@@ -153,6 +153,24 @@ float trapezoid_center(float thr_left1, float thr_left2, float thr_right1, float
         {return 0.0;}
 }
 
+float singleton(float thr_center, float x)
+{
+	/*
+    This function is one of simplest membership function that
+    defines a Fuzzy Set.
+
+	It define a Fuzzy Set with membership function that is unity at
+	a single particular point (thr_center) on the universe of discourse and
+	zero in elsewhere
+    */
+	if (thr_center == x)
+		{return 1.0;}
+	else 
+		{return 0.0;}
+}
+
+
+
 /* ARRAY OPERATOR */
 //
 float minimum(float* array_input, u_int array_size)
@@ -200,6 +218,12 @@ float maximum(float x1, float x2)
 
 /* CLASSES */
 //
+void FuzzySet::set_up(FS_type the_type, float thr_1)
+{
+	_param.mu_type = the_type;
+	_param.thr1 = thr_1;
+}
+
 void FuzzySet::set_up(FS_type the_type, float thr_1, float thr_2)
 {
     _param.mu_type = the_type;
@@ -241,6 +265,9 @@ float FuzzySet::mu_func(int x)
     case TRI:
         _val = triangular(this->_param.thr1, this->_param.thr2, this->_param.thr3, _val);
         break;
+	case SINGLE:
+		_val = singleton(this->_param.thr1, _val);
+		break;
     default:
         _val = 0.0;
     }
@@ -265,6 +292,9 @@ float FuzzySet::mu_func(float x)
     case TRI:
         _val = triangular(this->_param.thr1, this->_param.thr2, this->_param.thr3, _val);
         break;
+	case SINGLE:
+		_val = singleton(this->_param.thr1, _val);
+		break;
     default:
         _val = 0.0;
     }
@@ -278,6 +308,16 @@ void FuzzyFrame::Frame_SetUp(FuzzySet* sets, u_int _ling_size, float x_left, flo
     this->_domain.interval = (x_right - x_left)/(1.0*(DISC_SIZE - 1));
     this->_ling_sets = sets;
     this->_ling_size = _ling_size;
+}
+void FuzzyFrame::domainSetUp(float x_left, float x_right, float interval)
+{
+    this->_domain.low_bond = x_left;
+    this->_domain.up_bond = x_right;
+    this->_domain.interval = interval;
+}
+void FuzzyFrame::Set_SetUp(u_int indx, FS_type the_type, float thr_1)
+{
+	this->_ling_sets[indx].set_up(the_type, thr_1);
 }
 void FuzzyFrame::Set_SetUp(u_int indx, FS_type the_type, float thr_1, float thr_2)
 {
