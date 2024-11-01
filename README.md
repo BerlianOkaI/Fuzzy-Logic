@@ -2,7 +2,7 @@ Author          : Berlian Oka Irvianto  (Indonesia)
 
 First Modified   : December 2023
 
-Last Modified    : October 2024
+Last Modified    : November 2024
 
 
 This is a library that consist tools and objects (`FuzzySet`, `FuzzyFrame`, `FuzzyRule`
@@ -18,12 +18,12 @@ program example that were provided by the author in this repository.
 # HOW TO USE THE LIBRARY
 ## Declaring/Creating the Fuzzy System Objects
 Is this library, setting up the Fuzzy System can be done by creating this library objects: `FuzzySet`, `FuzzyFrame`,
-`FuzzyRule` and lastly `FuzzyFrame`. In general, all of the created objects (except for `FuzzyFrame`) are declared
+`FuzzyRule` and lastly `FuzzyFrame`. In general, all of the created objects (except for `FuzzyFrame`) are usually declared
 as an array (Read the example below to setting up the fuzzy system properly). The pointer of the objects (such as pointer
 to the `FuzzySet`, `FuzzyFrame`, and `FuzzyRule` object) then will be needed to set up the higher objects; For example,
-the pointer to the `FuzzySet` object (as an array) must be passed as one of arguments to set up the FuzzyFrame object.
+the pointer to the `FuzzySet` object (as an array) must be passed as one of the arguments to set up the FuzzyFrame object.
 The Figure below explains the relationship between this library objects where in that figure, the system use 2 Input `FuzzyFrame` and 1 
-Output `FuzzyFrame` with each of input `FuzzyFrame` consists of 3 `FuzzySet` and output `FuzzyFrame` consists of 2 `FuzzySet`. 
+Output `FuzzyFrame` with each input `FuzzyFrame` consists of 3 `FuzzySet` and output `FuzzyFrame` consists of 2 `FuzzySet`. 
 
 ![Figure 1](https://github.com/BerlianOkaI/Fuzzy-Logic/blob/main/FuzzySystemDataStructure.drawio.png)
 
@@ -68,7 +68,7 @@ Here is the step for initializing our fuzzy system.
 
       `FuzzySystem` is the final object of the library that need to be declared. To declare or create `FuzzySystem` object, we have to pass the pointer to the array of `FuzzyRule` object that has been created and the number of rules that has been created (in this example, we have 3 x 3 rules). This `FuzzySystem` then will be used to compute the output of our fuzzy logic system based on the inputs and depends on our fuzzy rules and fuzzy knowledge base. The example below shows how to declare the `FuzzySystem` object.
       ```
-      FuzzySystem mySystem(myRules, 9)// Declare a system that consist of 27 rule and use FuzzyRule that has been declared as argument
+      FuzzySystem mySystem(myRules, 9)        // Declare a system that consist of 27 rule and use FuzzyRule that has been declared as argument
       ```
 
 ## Setting up the Fuzzy System Objects
@@ -78,11 +78,124 @@ of determining the membership function of each `FuzzySet`s, Determining which `F
 input frames (antecedent) and other one (consequent), determining IF-THEN rule for each `FuzzyRule`s
 etc. For more details, please have a look on example program that were provided in this repository.
 
+The following shows how to do setup for each of created objects properly.
+
+1.  **Create macros to define the created object arrays indexes**
+
+      As we can see before, the created object always be in the form of array. Creating macros to define those indexes will help us to make our code easier to read and understandable. Using the previous example as reference, The macros below shows how to define the indexes.
+
+      ```
+      /* This section define index number as linguistic values of each FuzzyFrames */
+      // Linguistic value of Temperature (INPUT)
+      #define  COLD    0
+      #define  COOL    1
+      #define  HOT     2
+
+      // Linguistic value of Humidity (INPUT)
+      #define  DRY     0
+      #define  NORMAL  1
+      #define  WET     2
+
+      // Linguistic value of Heater (Output)
+      #define  OFF     0
+      #define  ON      1
+
+      /* This section define index number of FuzzyFrame array as identifier of each frame in array */
+      // Linguistic variables of INPUT
+      #define  TEMP    0
+      #define  HUM     1
+
+      // Linguistic variables of OUTPUT
+      #define  HEATER  0
+      ```
+
+2.  **Setting up the created** `FuzzyFrame` **Objects**
+
+      Setting up the `FuzzyFrame` objects intends to assign the `FuzzySet`s to each of our `FuzzyFrame`s. This can be done by passing the pointer to `FuzzySet` (array) as one of the argument of `Frame_SetUp` method
+      ```
+      void FuzzyFrame::Frame_SetUp(FuzzySet* sets, u_int _ling_size, float x_left, float x_right, FrameType FF_type);
+      ```
+      The parameter `sets` is the pointer to the `FuzzySet` of corresponding FuzzyFrame (or Linguistic Variable). `_ling_size` is the size of array of the `FuzzySet`. `x_left` and `x_right` are universe of discourse close boundaries that is needed to define the proper universe of discourse--If we want to define the universe of discourse of *Temperature* $T$ as $`T = [0\degree C, 100\degree C] `$, then we have to pass (float type data) `0.00F` and `100.0F` to `x_left` and `x_right` parameter. The `FF_type` variable is used to identify whether the frame is an `INPUT` or `OUTPUT`. The example code below shows how to setting up the frame.
+      ```
+      /* Setup for INPUT frames such as Temperature and Humidity */
+      Antecedent[TEMP].Frame_SetUp(Temperatures, 3, 0.0F, 100.0F, INPUT);      // Using 0.0 to 100.0 degree C as Univ. of Disc.
+      Antecedent[HUM].Frame_SetUp(Humidity, 3, 0.0F, 100.0F, INPUT);           // Using 0.0 to 100.0 % as Univ. of Disc.
+
+      /* Setup for OUTPUT frames */
+      Consequent[HEATER].Frame_SetUp(Heater, 2, 0.0, 100.0F, OUTPUT);          // Using 0.0 to 100.0 % as Univ. of Disc.
+      
+      ```
+
+3.  **Setting up each of Fuzzy Sets of each** `FuzzyFrame`
+
+      Setting up the Fuzzy Sets such as the membership function that will be used to define Fuzzy Sets is important in Fuzzy Inference System. This library only supports five kind of function that can be used as membership function: Singleton, Triangular, Trapezoid Left, Trapezoid Center, and Trapezoid Right. Those functions is used in this library because they are simplier and can be computed fastly compared to other function such as Sigmoid, Gaussian, etc. We can set up the fuzzy sets by calling one of `FuzzyFrame` method
+      ```
+      /* Select one of the following overloaded method that is appropriate with used membership function */
+      void FuzzyFrame::Set_SetUp(u_int indx, FS_type the_type, float thr_1);
+      void FuzzyFrame::Set_SetUp(u_int indx, FS_type the_type, float thr_1, float thr_2);
+      void FuzzyFrame::Set_SetUp(u_int indx, FS_type the_type, float thr_1, float thr_2, float thr_3);
+      void FuzzyFrame::Set_SetUp(u_int indx, FS_type the_type, float thr_1, float thr_2, float thr_3, float thr_4);
+      ```
+      `indx` variable refers to which `FuzzySets` element of the `FuzzySets` array that has been assigned that will be set up. `the_type` is the type of membership function that will be used. The threshold variables (`thr_1`, `thr_2`, etc) is used to define the shape of the membership function. The code below shows how to set up the Fuzzy Set properly.
+
+      ```
+      /* For Input Frames */
+      // Temperature
+      Antecedent[TEMP].Set_SetUp(COLD, TRP_L, 10.0F, 30.0F);
+      Antecedent[TEMP].Set_SetUp(COOL, TRP_C, 10.0F, 30.0F, 50.0F, 70.0F);
+      Antecedent[TEMP].Set_SetUp(HOT, TRP_R, 50.0F, 70.0F);
+
+      // Humidity
+      Antecedent[HUM].Set_SetUp(DRY, TRP_L, 25.0F, 50.0F);
+      Antecedent[HUM].Set_SetUp(NORMAL, TRI, 25.0F, 50.0F, 75.0F);
+      Antecedent[HUM].Set_SetUp(WET, TRP_R, 50.0F, 75.0F);
+
+      /* For Output Frames */
+      Consequent[HEATER].Set_SetUp(OFF, SINGLE, 0.0F);
+      Consequent[HEATER].Set_SetUp(ON, SINGLE, 100.0F);
+      ```
+
+      > Make sure that before setting up the Fuzzy Sets, the `FuzzyFrame` objects has been set up properly. Do not set up the Fuzzy Sets (this step) before setting up the Fuzzy Frames (Step 2).
+
+
+4.  **Setting up every** `FuzzyRule` **Objects that has been created**
+
+      This is perhaps the most troublesome set up step. That is because the number of the rules that is need to be set up is depend on the number of combination of possible antecedent proposition that were created by conjunction (logical AND) Connective; for $`(n_{1} \times n_{2} \times n_{3} \times ...)`$ possible antecedent (with $`n`$ denotes the number of linguistic values of corresponding linguistic variables), we have to define and properly set up $`(n_{1} \times n_{2} \times n_{3} \times ...)`$ Fuzzy Rules! For our examples, we need to define $3 \times 3$ Fuzzy Rules to create our Fuzzy Inference System.
+
+      The setup can be done by calling method `Rule_SetUp` and configuring the corresponding `unsigned int` array of antecedent and consequent that has been created before.
+
+      ```
+      /* Method that has to be called to setup the rules */
+      void FuzzyRule::Rule_SetUp(FuzzyFrame* input_frames, u_int* input_rules, u_int FR_input_size, FuzzyFrame* output_frames, u_int* output_rules, u_int FR_output_size);
+      ```
+      -  `input_frames` is pointer to the array of `FuzzyFrame` Inputs;
+      -  `input_rules` is pointer to the array (1D, array for corresponding rules only) of antecedent rule;
+      -  `FR_input_size` is the number of input linguistic variables (i.e. the number of Input Fuzzy Frame);
+      -  `output_frames` is pointer to the array of `FuzzyFrame` Outputs;
+      -  `output_rules` is pointer to the array (1D, array for corresponding rules only) of consequent rule;
+      -  `FR_output_size` is the number of output linguistic variables (i.e. the number of Output Fuzzy Frame)
+  
+      The example code below shows how to defines each of `FuzzyRule`
+
+      ```
+      // Rule 0
+      myRules[0].Rule_SetUp(Antecedent, input_rule[0], 2, Consequent, output_rule[0], 1);
+      input_rule[0][TEMP] = COLD;    input_rule[0][HUM] = DRY;
+      output_rule[0][HEATER] = ON;
+      // Rule 1
+      ...
+      ...
+      // Rule 8
+      myRules[8].Rule_SetUp(Antecedent, input_rule[8], 2, Consequent, output_rule[8], 1);
+      input_rule[8][TEMP] = COLD;    input_rule[8][HUM] = DRY;
+      output_rule[8][HEATER] = OFF;
+      ```
+      
 ## Using It for Generating Output in Main Application Section
 
 After we finished the initiation of fuzzy system, then we can use some method of `FuzzySystem` class to perform fuzzy operation. In general, the operation
 intend to map the inputs (such as sensor datas like temperature, humidity, etc) into outputs (such as actuator output) based on the fuzzy rules and fuzzy knowledge
-base in our system (Inference Mechanism). To perform the computation of the output, just pass pointer to the float array input as an argument to `FuzzySystem.Defuzzyfication(float* input, unsigned int output_id)`.
+base in our system (Inference Mechanism). To perform the computation of the output, just pass pointer to the float array input as an argument to `void FuzzySystem::Defuzzyfication(float* input, unsigned int output_id)`.
 
 ```
 /* Create an input and output as float variables */
