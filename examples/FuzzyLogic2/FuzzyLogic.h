@@ -1,6 +1,6 @@
 /***
   * Author          : Berlian Oka Irvianto  (Indonesia)
-  * Last Modified   : Friday, December 15th 2023
+  * Last Modified   : November, 2024
   *
   * "In the name of God, the Most Gracious, the Most Merciful"
   *
@@ -56,20 +56,21 @@
   *
 ***/
 
-#ifndef FUZZYLOGIC_H
-#define FUZZYLOGIC_H
+#ifndef FUZZYLOGIC_H_
+#define FUZZYLOGIC_H_
 
-#define DISC_SIZE               100
+#define DISC_SIZE               10
 
 typedef unsigned int u_int;
 
 typedef enum
 {
     // Type of membership function for defining Fuzzy Set
-    TRP_L,
-    TRP_C,
-    TRP_R,
-    TRI
+    TRP_L,			// Trapezoid Left
+    TRP_C,			// Trapezoid Center
+    TRP_R,			// Trapezoid Right
+    TRI,			// Triangular
+	SINGLE			// Singleton
 } FS_type;
 
 typedef enum
@@ -100,6 +101,7 @@ float triangular(float thr_left, float thr_center, float thr_right, float x);
 float trapezoid_left(float thr_left, float thr_right, float x);
 float trapezoid_right(float thr_left, float thr_right, float x);
 float trapezoid_center(float thr_left1, float thr_left2, float thr_right1, float thr_right2, float x);
+float singleton(float thr_center, float x);
 
 // Operator for array only
 float minimum(float* array_input, u_int array_size);
@@ -116,6 +118,7 @@ private:
     FS_param _param;
 public:
     // Initialization
+	void set_up(FS_type the_type, float thr_1);
     void set_up(FS_type the_type, float thr_1, float thr_2);
     void set_up(FS_type the_type, float thr_1, float thr_2, float thr_3);
     void set_up(FS_type the_type, float thr_1, float thr_2, float thr_3, float thr_4);
@@ -134,6 +137,8 @@ private:
     FrameType _type;
 public:
     void Frame_SetUp(FuzzySet* sets, u_int _ling_size, float x_left, float x_right, FrameType FF_type);
+    void domainSetUp(float x_left, float x_right, float interval);
+	void Set_SetUp(u_int indx, FS_type the_type, float thr_1);
     void Set_SetUp(u_int indx, FS_type the_type, float thr_1, float thr_2);
     void Set_SetUp(u_int indx, FS_type the_type, float thr_1, float thr_2, float thr_3);
     void Set_SetUp(u_int indx, FS_type the_type, float thr_1, float thr_2, float thr_3, float thr_4);
