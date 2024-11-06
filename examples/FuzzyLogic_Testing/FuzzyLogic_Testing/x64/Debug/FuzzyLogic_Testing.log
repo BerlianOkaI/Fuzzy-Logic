@@ -1,0 +1,4 @@
+﻿  Testing.cpp
+D:\Berlian File\Project\MS Visual Studio\Library Testing\FuzzyLogic_Testing\FuzzyLogic_Testing\Testing.cpp(133,19): warning C4101: 'prop_right': unreferenced local variable
+D:\Berlian File\Project\MS Visual Studio\Library Testing\FuzzyLogic_Testing\FuzzyLogic_Testing\Testing.cpp(133,8): warning C4101: 'prop_left': unreferenced local variable
+  FuzzyLogic_Testing.vcxproj -> D:\Berlian File\Project\MS Visual Studio\Library Testing\FuzzyLogic_Testing\x64\Debug\FuzzyLogic_Testing.exe
